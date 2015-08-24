@@ -12,6 +12,9 @@ namespace :config do
   desc "push the .env file to heroku config"
   task :push, [:env_file, :appname] => :executable do |t, args|
     args.with_defaults(env_file: ".env")
+    args.with_defaults(appname: nil)
+
+    appname = args[:appname]
 
     # Heroku allows setting env vars in 1 go
     value = File.readlines(args[:env_file]).map(&:strip).join(' ')
@@ -22,6 +25,8 @@ namespace :config do
   task :pull, [:env_file, :appname] => :executable do |t, args|
     args.with_defaults(env_file: ".env")
     args.with_defaults(appname: nil)
+
+    appname = args[:appname]
 
     remote_config = `heroku config #{appname ? "--app #{appname}" : nil}`
     remote_config or fail "could not fetch remote config"
